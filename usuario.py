@@ -6,6 +6,7 @@ class usuario:
         self.correo = correo
         self.password= password
         
+        
 #=============================================
     def getNombre(self):
         return self.nombre
@@ -36,7 +37,7 @@ class usuario:
 
     def setPassword(self,password):
         self.password = password
-#=====================================
+
   
 
 

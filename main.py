@@ -3,13 +3,14 @@ from flask_cors import CORS
 import json
 
 from usuario import usuario
-
+from publicaciones import publicaciones
 
 
 app=Flask(__name__)
 CORS(app)
 
 Publicaciones = [] #listas xd 
+
 usuarios = [] #listas xd
 
 usuarios.append(usuario("Abner Cardona", "M", "admin", "admin@ipc1.com", "admin@ipc1")) #PARA QUE ESTE GUARDADO
@@ -33,6 +34,22 @@ def registrarUsuarios(): #REGISTRAR POST
             'Mensaje': 'Ingrese una contraseña válida que contenga un número, un simbolo y tenga como mínimo 8 carácteres',
             'Entrar': 'NO'
         }))
+
+
+        
+
+
+
+
+def validarinfo(usernamexd,passwordxd):
+    for usuario in usuarios:
+        if usernamexd == usuario.getUsername():
+            if passwordxd == usuario.getPassword():
+                return True
+    return False
+
+
+
 
     
 
@@ -65,12 +82,45 @@ def login():
             'Mensaje': 'Bienvenido' + username,
             'Tipo': 'Admin',
         }))
+    elif validarinfo(username,contrasena) == True:
+        return(jsonify({
+            "Mensaje": "Bienvenido Usuario",
+            "Tipo": "Usuario",
+            "user": str(username)}))
     return (jsonify({
             'Mensaje': 'Sus credenciales son inválidas',
             'Tipo': 'Nadie',
         }))
 
+@app.route('/CrearPublicacion', methods= ['POST'])
+def CrearPublicacion():
+    global Publicaciones
+    
+    tipo = request.json['type']
+    url = request.json['url']
+    date = request.json['date']
+    categoria = request.json['category']
+    
+    nuevo2 = publicaciones(tipo, url, date, categoria,"Usuario")
+    Publicaciones.append(nuevo2)
+    return (jsonify({
+        'Mensaje':'Se publico con exito'
+    }))
 
+@app.route('/VerPublicaciones', methods= ['GET'])
+def VerPublicacion():
+    global Publicaciones
+    Datos = []
+    for publicaciones in Publicaciones:
+        objeto = {
+            'type': publicaciones.getTipo(),
+            'url': publicaciones.getUrl(),
+            'date': publicaciones.getDate(),
+            'category': publicaciones.getCategoria(),
+            'author': publicaciones.getAuthor()
+        }
+        Datos.append(objeto)
+    return(jsonify(Datos))
 
 
 
